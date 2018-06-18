@@ -10,7 +10,7 @@ module.exports = env => {
   return (module.exports = {
     entry: './src/app.js',
     output: {
-      path: path.join(__dirname, 'public'),
+      path: path.join(__dirname, 'public', 'dist'),
       filename: 'bundle.js',
     },
     // loader - transform the file through babel/scss
@@ -38,6 +38,7 @@ module.exports = env => {
       contentBase: path.join(__dirname, 'public'),
       // for client side routing
       historyApiFallback: true,
+      publicPath: '/dist/',
     },
   });
 };
