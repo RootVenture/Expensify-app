@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import ExpenseForm from './ExpenseForm';
 import { connect } from 'react-redux';
-import { addExpense } from '../actions/expenses';
+import { startAddExpense } from '../actions/expenses';
 
 export class AddExpensePage extends Component {
   onSubmit = expense => {
-    this.props.addExpense(expense);
+    this.props.startAddExpense(expense);
     // redirect to our dashboard after submit
     this.props.history.push('/');
   };
@@ -21,7 +21,7 @@ export class AddExpensePage extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  addExpense: expense => dispatch(addExpense(expense)),
+  startAddExpense: expense => dispatch(startAddExpense(expense)),
 });
 
 // need to connect store to access dispatch
