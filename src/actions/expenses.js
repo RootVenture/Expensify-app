@@ -1,4 +1,4 @@
-import uuid from 'uuid';
+// import uuid from 'uuid';
 import database from '../firebase/firebase';
 
 // component calls action generator
@@ -47,3 +47,29 @@ export const editExpense = (id, updates) => ({
   id,
   updates,
 });
+
+// SET_EXPENSES
+export const setExpenses = expenses => ({
+  type: 'SET_EXPENSES',
+  expenses,
+});
+
+// export const startSetExpenses;
+export const startSetExpenses = () => dispatch =>
+  // 1. fetch all expense data
+  database
+    .ref('expenses')
+    .once('value')
+    .then(snapshot => {
+      // 2. parse all data into array
+      const expeneses = [];
+
+      snapshot.forEach(item => {
+        expeneses.push({
+          id: item.key,
+          ...item.val(),
+        });
+      });
+      // 3.dispatch SET_EXPENSES
+      dispatch(setExpenses(expeneses));
+    });

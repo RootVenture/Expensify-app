@@ -67,3 +67,14 @@ test('should edit expense by id', () => {
 
   expect(state).toEqual(state);
 });
+
+test('should set expenses', () => {
+  const action = {
+    type: 'SET_EXPENSES',
+    expenses: [expenses[1]],
+  };
+  // even though called with every expense, will only have expenses[1] due to set expense action
+  const state = expensesReducer(expenses, action);
+
+  expect(state).toEqual([expenses[1]]);
+});
