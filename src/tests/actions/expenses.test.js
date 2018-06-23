@@ -7,6 +7,7 @@ import {
   startAddExpense,
   setExpenses,
   startSetExpenses,
+  startRemoveExpense,
 } from '../../actions/expenses';
 import expenses from '../fixtures/expenses';
 import database from '../../firebase/firebase';
@@ -35,16 +36,37 @@ test('Should setup remove expense action object', () => {
   });
 });
 
+test('Should remove expense from firebase', done => {
+  const store = createMockStore({});
+  const { id } = expenses[2];
+
+  store
+    .dispatch(startRemoveExpense({ id }))
+    .then(() => {
+      const actions = store.getActions();
+
+      expect(actions[0]).toEqual({
+        type: 'REMOVE_EXPENSE',
+        id,
+      });
+      return database.ref(`expenses/${id}`).once('value');
+    })
+    .then(snapshot => {
+      expect(snapshot.val()).toBeFalsy();
+      done();
+    });
+});
+
 test('Should setup edit expense action object', () => {
   const action = editExpense('123abc', {
-    note: 'New note value',
+    note: 'New note value'
   });
 
   expect(action).toEqual({
     type: 'EDIT_EXPENSE',
     id: '123abc',
     updates: {
-      note: 'New note value',
+      note: 'New note value'
     },
   });
 });
@@ -147,11 +169,15 @@ test('should set up set expense action object with data', () => {
 });
 
 test('should fetch the expenses from firebase', done => {
+  // create our fake store
   const store = createMockStore({});
+
+  // dispatch our fetch action
   store.dispatch(startSetExpenses()).then(() => {
+    // get actions from the mock store after dispatching actionCreator
     const actions = store.getActions();
 
-    expect(action[0]).toEqual({
+    expect(actions[0]).toEqual({
       type: 'SET_EXPENSES',
       expenses,
     });
