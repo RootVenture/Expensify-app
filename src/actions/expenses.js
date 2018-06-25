@@ -13,7 +13,8 @@ export const addExpense = expense => ({
 });
 
 // allowed because of redux thunk -- Create our data
-export const startAddExpense = (expenseData = {}) => dispatch => {
+export const startAddExpense = (expenseData = {}) => (dispatch, getState) => {
+  const { uid } = getState().auth;
   const { description = '', note = '', amount = 0, created = 0 } = expenseData;
 
   const expense = {
@@ -22,8 +23,9 @@ export const startAddExpense = (expenseData = {}) => dispatch => {
     amount,
     created,
   };
+
   return database
-    .ref('expenses')
+    .ref(`/users/${uid}/expenses`)
     .push(expense)
     .then(ref => {
       dispatch(
@@ -41,13 +43,16 @@ export const removeExpense = ({ id } = {}) => ({
   id,
 });
 
-export const startRemoveExpense = ({ id } = {}) => dispatch =>
-  database
-    .ref(`expenses/${id}`)
+export const startRemoveExpense = ({ id } = {}) => (dispatch, getState) => {
+  const { uid } = getState().auth;
+
+  return database
+    .ref(`users/${uid}/expenses/${id}`)
     .remove()
     .then(() => {
       dispatch(removeExpense({ id }));
     });
+};
 
 // EDIT_EXPENSE
 export const editExpense = (id, updates) => ({
@@ -56,13 +61,16 @@ export const editExpense = (id, updates) => ({
   updates,
 });
 
-export const startEditExpense = (id, updates) => dispatch =>
-  database
-    .ref(`/expenses/${id}`)
+export const startEditExpense = (id, updates) => (dispatch, getState) => {
+  const { uid } = getState().auth;
+
+  return database
+    .ref(`/users/${uid}/expenses/${id}`)
     .update(updates)
     .then(() => {
       dispatch(editExpense(id, updates));
     });
+};
 
 // SET_EXPENSES
 export const setExpenses = expenses => ({
@@ -70,10 +78,11 @@ export const setExpenses = expenses => ({
   expenses,
 });
 
-export const startSetExpenses = () => dispatch =>
+export const startSetExpenses = () => (dispatch, getState) => {
+  const { uid } = getState().auth;
   // 1. fetch all expense data
-  database
-    .ref('expenses')
+  return database
+    .ref(`/users/${uid}/expenses`)
     .once('value')
     .then(snapshot => {
       // 2. parse all data into array
@@ -88,3 +97,4 @@ export const startSetExpenses = () => dispatch =>
       // 3.dispatch SET_EXPENSES
       dispatch(setExpenses(expeneses));
     });
+};
