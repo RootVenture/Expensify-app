@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ExpenseForm from './ExpenseForm';
-import { startEditExpense, startRemoveExpense } from '../actions/expenses';
+import { startEditExpense } from '../actions/expenses';
+import ConfirmModal from './ConfirmModal';
 
 export class EditExpensePage extends Component {
+  state = {
+    modalStatus: false,
+  };
+
   onSubmit = expense => {
     this.props.startEditExpense(this.props.expense.id, expense);
 
@@ -11,12 +16,18 @@ export class EditExpensePage extends Component {
     this.props.history.push('/');
   };
 
-  onClick = id => {
-    this.props.startRemoveExpense({ id: this.props.expense.id });
-
-    // redirect to dashboard
-    this.props.history.push('/');
+  onClick = () => {
+    this.setState(() => ({
+      modalStatus: true,
+    }));
   };
+
+  handleModalClose = () => {
+    this.setState(() => ({
+      modalStatus: false,
+    }));
+  };
+
   render() {
     return (
       <div>
@@ -30,6 +41,11 @@ export class EditExpensePage extends Component {
           <button onClick={this.onClick} className="button button--secondary">
             Delete
           </button>
+          <ConfirmModal
+            expense={this.props.expense}
+            isOpen={this.state.modalStatus}
+            handleModalClose={this.handleModalClose}
+          />
         </div>
       </div>
     );
@@ -42,7 +58,6 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = dispatch => ({
   startEditExpense: (id, expense) => dispatch(startEditExpense(id, expense)),
-  startRemoveExpense: id => dispatch(startRemoveExpense(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditExpensePage);

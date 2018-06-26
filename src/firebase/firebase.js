@@ -14,8 +14,9 @@ firebase.initializeApp(config);
 const database = firebase.database();
 
 const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+const GitHubAuthprovider = new firebase.auth.GithubAuthProvider();
 
-export { firebase, googleAuthProvider, database as default };
+export { firebase, googleAuthProvider, GitHubAuthprovider, database as default };
 
 // // database.ref('expenses').push({
 // //   description: 'Food',
