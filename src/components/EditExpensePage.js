@@ -20,9 +20,17 @@ export class EditExpensePage extends Component {
   render() {
     return (
       <div>
-        <h3>{this.props.expense.id}</h3>
-        <ExpenseForm expense={this.props.expense} onSubmit={this.onSubmit} />
-        <button onClick={this.onClick}>Remove</button>
+        <div className="page-header">
+          <div className="content-container">
+            <h1 className="page-title">{this.props.expense.description}</h1>
+          </div>
+        </div>
+        <div className="content-container">
+          <ExpenseForm expense={this.props.expense} onSubmit={this.onSubmit} />
+          <button onClick={this.onClick} className="button button--secondary">
+            Delete
+          </button>
+        </div>
       </div>
     );
   }

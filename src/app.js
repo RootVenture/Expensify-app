@@ -9,6 +9,7 @@ import AppRouter, { history } from './routers/AppRouter';
 import { firebase } from './firebase/firebase';
 import { startSetExpenses } from './actions/expenses';
 import { login, logout } from './actions/auth';
+import Spinner from './components/Spinner';
 
 const store = configureStore();
 
@@ -26,7 +27,7 @@ const renderApp = () => {
   hasRendered = true;
 };
 
-ReactDOM.render(<p>Loading...</p>, document.querySelector('#app'));
+ReactDOM.render(<Spinner />, document.querySelector('#app'));
 
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
